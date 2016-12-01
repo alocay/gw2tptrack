@@ -64,7 +64,11 @@ var config = {
 
 var pool = new pg.Pool(config);
 
+console.log('pool: ' + JSON.stringify(pool));
+
 pool.connect(process.env.DATABASE_URL, function(err, client, done) {
+  console.log('connecting...');
+
   if (err) {
     return console.error('error fetching client from pool', err);
   }
