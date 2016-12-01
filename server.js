@@ -4,11 +4,13 @@ var http = require('http');
 var https = require('https');
 var bodyParser = require('body-parser');
 var pg = require('pg');
+var query = require('pg-query');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 var port = process.env.PORT || 3000;
+var dburl = process.env.DATABASE_URL || 'postgres://qdowfxbkxxzbmz:csxMzsTDGDw_jhDtDl87u_afGo@ec2-54-243-231-255.compute-1.amazonaws.com:5432/d2ghfft6urjrgo?ssl=true'
 
 var router = express.Router();
 
@@ -57,7 +59,21 @@ app.get('/', function (req, res) {
   res.send('Home!');
 });
 
+var testpg = function testpg() {
+  query.connectionParameters = dburl;
+  query('SELECT $1::int AS number', ['1'], function(err, rows, result) {
+    if(err) {
+      return console.error('error running query', err);
+    }
 
+    console.log(result.rows[0].number + ' | ' + JSON.stringify(rows));
+  });
+};
+
+app.get('/testpg', function (req, res) {
+  testpg();
+  res.send('Testing PG');
+});
 
 app.use('/api', router);
 
