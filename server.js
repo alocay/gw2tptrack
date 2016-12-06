@@ -11,7 +11,7 @@ var async = require('async');
 //var httpServer = http.Server(app);
 var production = !!process.env.DATABASE_URL;
 var port = process.env.PORT || 3000;
-var dburl = process.env.DATABASE_URL || 'postgres://qdowfxbkxxzbmz:csxMzsTDGDw_jhDtDl87u_afGo@ec2-54-243-231-255.compute-1.amazonaws.com:5432/d2ghfft6urjrgo?ssl=true';
+var dburl = process.env.DATABASE_URL;
 var router = express.Router();
 var contentPath = production ? path.join(__dirname, 'dist') : path.join(__dirname, 'dev');
 
