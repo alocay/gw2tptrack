@@ -11,7 +11,7 @@ var async = require('async');
 //var httpServer = http.Server(app);
 var production = !!process.env.DATABASE_URL;
 var port = process.env.PORT || 3000;
-var dburl = process.env.DATABASE_URL
+var dburl = process.env.DATABASE_URL;
 var router = express.Router();
 var contentPath = production ? path.join(__dirname, 'dist') : path.join(__dirname, 'dev');
 
