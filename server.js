@@ -250,7 +250,7 @@ var loadtypes = function loadtypes() {
 };*/
 
 app.get('/load', function (req, res) {
-  loadtypes();
+  //loadtypes();
   res.send('Loading data...');
 });
 
