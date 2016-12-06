@@ -2,7 +2,8 @@ var React = require('react');
 var Immutable = require('immutable');
 var ImmutablePropTypes = require('react-immutable-proptypes');
 var classnames = require('classnames');
-var squaresGif = require('../../assets/squares.gif');
+var moment = require('moment');
+var defaultFormat = 'YYYY-MM-DD';
 
 var DatePicker = React.createClass({
   propTypes: {
@@ -20,7 +21,7 @@ var DatePicker = React.createClass({
   },
 
   componentDidMount: function componentDidMount() {
-    this.setState({ value: this.props.value.concat('') });
+    this.setState({ value: moment(this.props.value).isValid() ? moment(this.props.value).format(defaultFormat) : null });
   },
 
   handleClick: function handleClick() {
@@ -42,10 +43,12 @@ var DatePicker = React.createClass({
   },
 
   render: function render() {
+    var dateValue = this.state.value ? moment(this.state.value).format(defaultFormat) : null;
+    var textValue = dateValue || '--';
     var picker = this.state.editing ?
-      <input type="date" onBlur={this.handleBlur} onChange={this.handleDateChange} value={this.state.value} autoFocus /> :
+      <input type="date" onBlur={this.handleBlur} onChange={this.handleDateChange} value={dateValue || moment().format(defaultFormat)} autoFocus /> :
       <span className={classnames({ [this.props.className]: true })} onClick={this.handleClick}>
-        {this.props.value}
+        {textValue}
       </span>;
 
     return picker;

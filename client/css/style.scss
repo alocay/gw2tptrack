@@ -4,6 +4,31 @@ ul.tree {
   }
 }
 
+button {
+  &.save-order-changes,
+  &.cancel-order-changes {
+      cursor: pointer;
+      color: #444;
+      background: #e2edff;/*#c2d2ea;*/
+  }
+
+  &.save-order-changes:hover
+  &.cancel-order-changes {
+    color: #000;
+    background: #a1bdea;
+  }
+
+  &.save-order-changes:disabled,
+  &.save-order-changes[disabled],
+  &.cancel-order-changes:disabled,
+  &.cancel-order-changes[disabled] {
+    cursor: default;
+    pointer-events: none;
+    color: #b0b0b0;
+    background-color: #f7f7f7;
+  }
+}
+
 table {
   &.new-row-table {
       input {

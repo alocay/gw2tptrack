@@ -17,6 +17,8 @@ var contentPath = production ? path.join(__dirname, 'dist') : path.join(__dirnam
 
 const LISTING_FEE = 0.05;
 const TRANSACTION_FEE = 0.1;
+const TOTAL_FEES = LISTING_FEE + TRANSACTION_FEE;
+const REAL_REVENUE_FACTOR = 1 - TOTAL_FEES;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -86,7 +88,7 @@ router.get('/items/data', function(req, res) {
       getJSON('/api/v0.9/json/item/' + dataid, function onSuccess(statusCode, data) {
         // Calculate flip profit
         var item = data.result;
-        var flipProfit = item.min_sale_unit_price - item.max_offer_unit_price - (item.min_sale_unit_price * LISTING_FEE) - (item.min_sale_unit_price * TRANSACTION_FEE);
+        var flipProfit = (item.min_sale_unit_price * REAL_REVENUE_FACTOR) - item.max_offer_unit_price; // - (Math.max(1, (item.min_sale_unit_price * LISTING_FEE))) - (Math.max(1, (item.min_sale_unit_price * TRANSACTION_FEE)));
         item.flipProfit = flipProfit;
         next(null, item);
       }, function (err) {
@@ -144,13 +146,13 @@ router.post('/orders/update', function(req, res) {
 
   console.log('Updating orders...');
   var updateQuery = 'UPDATE orders as o SET date_filled = c.date_filled, buy_price = c.buy_price, amount_ordered = c.amount_ordered, predicted_sell_unit_price = c.predicted_sell_unit_price, ' +
-    'amount_filled = c.amount_filled, actual_sell_unit_price = c.actual_sell_unit_price, date_sold = c.date_sold, date_ordered = c.date_ordered from (values ';
+    'amount_filled = c.amount_filled, actual_sell_unit_price = c.actual_sell_unit_price, date_sold = c.date_sold, date_ordered = c.date_ordered, amount_sold = c.amount_sold, amount_listed = c.amount_listed from (values ';
 
   var count = 1;
   var flatorders = [];
   for(var i = 0; i < orders.length; i++) {
     var values = '($' + (count++) + '::uuid, $' + (count++) + '::date, $' + (count++) + '::integer, $' + (count++) + '::integer, $' + (count++) + '::integer, $' + (count++) +
-       '::integer, $' + (count++) + '::integer, $' + (count++) + '::date, $' + (count++) + '::date)';
+       '::integer, $' + (count++) + '::integer, $' + (count++) + '::date, $' + (count++) + '::date, $' + (count++) + '::integer, $' + (count++) + ':integer)';
 
     if ((i+1) < orders.length) {
       values += ',';
@@ -158,10 +160,11 @@ router.post('/orders/update', function(req, res) {
 
     updateQuery += values;
 
-    flatorders = flatorders.concat([orders[i].id, orders[i].date_filled, orders[i].buy_price, orders[i].amount_ordered, orders[i].predicted_sell_unit_price, orders[i].amount_filled, orders[i].actual_sell_unit_price, orders[i].date_sold, orders[i].date_ordered]);
+    flatorders = flatorders.concat([orders[i].id, orders[i].date_filled, orders[i].buy_price, orders[i].amount_ordered, orders[i].predicted_sell_unit_price,
+      orders[i].amount_filled, orders[i].actual_sell_unit_price, orders[i].date_sold, orders[i].date_ordered, orders[i].amount_sold, orders[i].amount_listed]);
   }
 
-  updateQuery += ') AS c(id, date_filled,buy_price,amount_ordered,predicted_sell_unit_price,amount_filled,actual_sell_unit_price,date_sold,date_ordered) WHERE c.id = o.id';
+  updateQuery += ') AS c(id, date_filled,buy_price,amount_ordered,predicted_sell_unit_price,amount_filled,actual_sell_unit_price,date_sold,date_ordered,amount_sold,amount_listed) WHERE c.id = o.id';
 
   console.log(updateQuery);
   query(updateQuery, flatorders, function(err, rows, result) {

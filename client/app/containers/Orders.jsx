@@ -67,11 +67,13 @@ var Orders = React.createClass({
       { title: 'Buy Price', property: 'buy_price', type: 'number' },
       { title: 'Amount Ordered', property: 'amount_ordered', type: 'number' },
       { title: 'Total Cost', property: 'total_cost', type: 'noedit' },
-      { title: 'Predicted Profit', property: 'predicted_profit', type: 'noedit' },
-      { title: 'Actual Profit', property: 'actual_profit', type: 'noedit' },
       { title: 'Predicted Sell Unit Price', property: 'predicted_sell_unit_price', type: 'number' },
+      { title: 'Predicted Profit', property: 'predicted_profit', type: 'noedit' },
       { title: 'Amount Filled', property: 'amount_filled', type: 'number' },
       { title: 'Actual Cost', property: 'actual_total_cost', type: 'noedit' },
+      { title: 'Amount Listed', property: 'amount_listed', type: 'number' },
+      { title: 'Amount Sold', property: 'amount_sold', type: 'number' },
+      { title: 'Actual Profit', property: 'actual_profit', type: 'noedit' },
       { title: 'Actual Sell Unit Price', property: 'actual_sell_unit_price', type: 'number' },
     ]);
   },
@@ -116,7 +118,6 @@ var Orders = React.createClass({
   },
 
   onOrderChanged: function onOrderChanged(changedOrder) {
-    debugger;
     var orderIndex = this.state.detailedOrders.findIndex(o => o.get('id') === changedOrder.get('id'));
     var modifiedOrderIndex = this.state.modifiedOrders.findIndex(o => o.get('id') === changedOrder.get('id'));
 
@@ -136,6 +137,13 @@ var Orders = React.createClass({
     }
   },
 
+  cancelChanges: function cancelChanges() {
+    this.setState({
+      detailedOrders: this.calculateAllOrderDetails(this.props.orders.get('data')),
+      modifiedOrders: this.state.modifiedOrders.clear()
+    })
+  },
+
   calculateAllOrderDetails: function(orders) {
     return orders.map(o => this.calculateOrderDetails(o));
   },
@@ -152,17 +160,18 @@ var Orders = React.createClass({
        .set('predicted_profit', predictedTotalTax - totalCost);
     });
 
-    if (order.get('amount_filled') && order.get('actual_sell_unit_price')) {
+    if (order.get('actual_sell_unit_price') && order.get('amount_filled') && order.get('amount_listed') && order.get('amount_sold')) {
       var actualCost = order.get('amount_filled') * order.get('buy_price');
-      var actualTotal = order.get('actual_sell_unit_price') * order.get('amount_filled');
-      var actualTotalTax = actualTotal - (actualTotal * Constants.LISTING_FEE) - (actualTotal * Constants.TRANSACTION_FEE);
+      var actualTotalListed = order.get('actual_sell_unit_price') * order.get('amount_listed');
+      var actualTotal = order.get('actual_sell_unit_price') * order.get('amount_sold');
+      var actualTotalTax = actualTotal - (actualTotalListed * Constants.LISTING_FEE) - (actualTotal * Constants.TRANSACTION_FEE);
       var actualProfit = actualTotalTax - actualCost;
       var orderWithActuals = orderWithPredictions.withMutations(o => {
         o.set('actual_total_cost', actualCost)
          .set('actual_total_sale', actualTotal)
          .set('actual_total_sale_aftertax', actualTotalTax)
          .set('actual_profit', actualProfit)
-         .set('profit_per_unit', actualProfit / amount_filled)
+         .set('profit_per_unit', actualProfit / o.get('amount_sold'))
          .set('profit_differential', actualProfit - o.get('predicted_profit'));
       });
 
@@ -180,8 +189,9 @@ var Orders = React.createClass({
           Orders
           <div className="row">
             <input className="four columns" type="text" placeholder="Search" onKeyUp={this.onSearchChanged}></input>
-            <button className="three columns offset-by-two" onClick={this.addOrder}>Add Order</button>
-            <button className="three columns" onClick={this.saveChanges}>Save Changes</button>
+            <button className="two columns offset-by-two" onClick={this.addOrder}>Add Order</button>
+            <button className="two columns save-order-changes" onClick={this.saveChanges} disabled={this.state.modifiedOrders.size === 0}>Save</button>
+            <button className="two columns cancel-order-changes" onClick={this.cancelChanges} disabled={this.state.modifiedOrders.size === 0}>Cancel</button>
           </div>
           {this.state.addingOrder ? <NewOrder headers={this.getNewOrderHeaders()} onSave={this.saveNewOrder} onCancel={this.cancelNewOrder}/> : null}
         </div>

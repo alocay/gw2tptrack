@@ -47,8 +47,7 @@ var Cell = React.createClass({
                            className="cell-editable"/>);
         break;
       case 'date':
-        var date = value ? moment(value).format("YYYY-MM-DD") : '--';
-        cell = (<DatePicker value={date}
+        cell = (<DatePicker value={value}
                             propName={header.get('property')}
                             change={this.props.onChange}
                             className="cell-editable" />);
