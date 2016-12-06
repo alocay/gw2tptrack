@@ -1,0 +1,69 @@
+ul.tree {
+  li {
+    list-style: none;
+  }
+}
+
+table {
+  &.new-row-table {
+      input {
+        width: 100px;
+      }
+  }
+}
+
+td {
+  &:first-child {
+    padding-left: 5px;
+  }
+
+  &.cell-expand-button {
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .cell-editable {
+    background-color: rgb(228, 228, 228);
+    padding: 5px;
+  }
+
+  input.cell-editable {
+    width: 100px;
+    background-color: rgb(255, 255, 255);
+  }
+
+  .expanded-cell-title {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+}
+
+div {
+  &#orders-header {
+    position: fixed;
+    background: rgb(255, 255, 255);
+    width: 80%;
+    margin-top: -100px;
+    padding-top: 20px;
+    border-bottom: 2px solid black;
+  }
+
+  &#orders-content {
+    margin-top: 90px;
+  }
+
+  &.loading-indicator {
+    position: absolute;
+    z-index: 999;
+    background: white;
+    width: 350px;
+    height: 350px;
+    top: 50%;
+    left: 50%;
+    display: none;
+  }
+
+  &.loading-indicator.enabled {
+    display: block;
+  }
+}
