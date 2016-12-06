@@ -108,7 +108,7 @@ var Cells = React.createClass({
     return (
       <tbody>
         <tr>
-          <td onClick={this.toggleExpandedProperties} className="cell-expand-button">{expandButton}</td>
+          { this.props.extendedHeaders.size > 0 ? <td onClick={this.toggleExpandedProperties} className="cell-expand-button">{expandButton}</td> : null }
           {this.props.headers.map(h =>
             <td key={keyValue+h.get('property')}
                 className={classnames({ 'cell-editable': this.isCellEditable(h) })}>
