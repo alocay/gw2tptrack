@@ -36,15 +36,15 @@ var Items = React.createClass({
 
   getTableHeaders: function getTableHeaders() {
     return Immutable.fromJS([
-      { title: '', property: 'img', image: true },
-      { title: 'Name', property: 'name' },
-      { title: 'Flip Profit', property: 'flipProfit' },
-      { title: 'Max Buy', property: 'max_offer_unit_price' },
-      { title: 'Min Sell', property: 'min_sale_unit_price' },
-      { title: 'Num of Buys', property: 'offer_availability' },
-      { title: 'Num of Sells', property: 'sale_availability' },
-      { title: 'Buy Change', property: 'offer_price_change_last_hour' },
-      { title: 'Sell Change', property: 'sale_price_change_last_hour' },
+      { title: '', property: 'img', type: 'image' },
+      { title: 'Name', property: 'name', type: 'noedit' },
+      { title: 'Flip Profit', property: 'flipProfit', type: 'noedit' },
+      { title: 'Max Buy', property: 'max_offer_unit_price', type: 'noedit' },
+      { title: 'Min Sell', property: 'min_sale_unit_price', type: 'noedit' },
+      { title: 'Num of Buys', property: 'offer_availability', type: 'noedit' },
+      { title: 'Num of Sells', property: 'sale_availability', type: 'noedit' },
+      { title: 'Buy Change', property: 'offer_price_change_last_hour', type: 'noedit' },
+      { title: 'Sell Change', property: 'sale_price_change_last_hour', type: 'noedit' },
     ]);
   },
 
