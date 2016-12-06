@@ -30,7 +30,7 @@ module.exports = {
         path: paths.dist,
         filename: '[name]' + outputFileTemplateSuffix + '.js',
         chunkFilename: '[id]' + outputFileTemplateSuffix + '.js',
-        publicPath: './dist/'
+        publicPath: './'
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
@@ -49,7 +49,7 @@ module.exports = {
         new CleanWebpackPlugin([paths.dist], {
           root: path.join(__dirname, '..'),
           varbose: true,
-          dry: false
+          dry: true
         })
     ],
     resolveLoader: {
