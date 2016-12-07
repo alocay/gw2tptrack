@@ -3,6 +3,7 @@
 node_modules/
 *.hot-update.js
 *.hot-update.json
+npm-debug.log*
 
 # Compiled source #
 ###################
