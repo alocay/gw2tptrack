@@ -1,6 +1,7 @@
 var React = require('react');
 var bindActionCreators = require('redux').bindActionCreators;
 var connect = require('react-redux').connect;
+var withRouter = require('react-router').withRouter;
 var Immutable = require('immutable');
 var ImmutablePropTypes = require('react-immutable-proptypes');
 var classNames = require('classnames');
@@ -23,6 +24,8 @@ var Orders = React.createClass({
   },
 
   componentDidMount: function componentDidMount() {
+    this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
+
     if (!this.props.orders.get('data') && !this.props.orders.get('loading')) {
       this.props.actions.fetchOrders();
     } else if (this.props.orders.get('data')) {
@@ -50,6 +53,12 @@ var Orders = React.createClass({
           detailedOrders: this.state.detailedOrders.concat(detailed.slice(this.state.detailedOrders.size, detailed.size))
         });
       }
+    }
+  },
+
+  routerWillLeave: function routerWillLeave(nextLocation) {
+    if (this.state.modifiedOrders.size > 0) {
+      return "Modified orders weren't saved. Do you want to leave them unsaved?";
     }
   },
 
@@ -181,23 +190,30 @@ var Orders = React.createClass({
     return orderWithPredictions;
   },
 
+  calculateTotalProfit: function calculateTotalProfit(orders) {
+    return orders.reduce((a, b) => b.get('actual_profit') ? a + b.get('actual_profit') : a, 0);
+  },
+
   render: function render() {
+    var filteredOrders = this.filterOrders(this.state.detailedOrders);
     return (
       <div>
         <Loading enable={this.props.orders.get('loading') || this.props.orders.get('updating')} />
         <div id="orders-header">
-          Orders
-          <div className="row">
-            <input className="four columns" type="text" placeholder="Search" onKeyUp={this.onSearchChanged}></input>
-            <button className="two columns offset-by-two" onClick={this.addOrder}>Add Order</button>
-            <button className="two columns save-order-changes" onClick={this.saveChanges} disabled={this.state.modifiedOrders.size === 0}>Save</button>
-            <button className="two columns cancel-order-changes" onClick={this.cancelChanges} disabled={this.state.modifiedOrders.size === 0}>Cancel</button>
+          <div className="container">
+            <div className="row">
+              <input className="four columns" type="text" placeholder="Search" onKeyUp={this.onSearchChanged}></input>
+              <button className="two columns offset-by-two" onClick={this.addOrder} disabled={this.state.addingOrder}>Add Order</button>
+              <button className="two columns save-order-changes" onClick={this.saveChanges} disabled={this.state.modifiedOrders.size === 0}>Save</button>
+              <button className="two columns cancel-order-changes" onClick={this.cancelChanges} disabled={this.state.modifiedOrders.size === 0}>Cancel</button>
+            </div>
+            <div>Total Profit: {this.calculateTotalProfit(filteredOrders)}</div>
+            {this.state.addingOrder ? <NewOrder headers={this.getNewOrderHeaders()} onSave={this.saveNewOrder} onCancel={this.cancelNewOrder}/> : null}
           </div>
-          {this.state.addingOrder ? <NewOrder headers={this.getNewOrderHeaders()} onSave={this.saveNewOrder} onCancel={this.cancelNewOrder}/> : null}
         </div>
         <div id="orders-content">
           <DataTable headers={this.getTableHeaders()}
-                     data={this.filterOrders(this.state.detailedOrders)}
+                     data={filteredOrders}
                      extendedHeaders={this.getExtendedHeaders()}
                      keyProperty={'id'}
                      onChange={this.onOrderChanged} />
@@ -219,4 +235,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 };
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Orders);
+module.exports = withRouter(connect(mapStateToProps, mapDispatchToProps)(Orders));

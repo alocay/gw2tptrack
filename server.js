@@ -8,7 +8,6 @@ var query = require('pg-query');
 var path = require('path');
 var async = require('async');
 
-//var httpServer = http.Server(app);
 var production = !!process.env.DATABASE_URL;
 var port = process.env.PORT || 3000;
 var dburl = process.env.DATABASE_URL;

@@ -1,15 +1,75 @@
-ul.tree {
-  li {
+$minoraccent: #CAEBF2;
+$textcolor: #545454; /*#A9A9A9;*/
+$bgcolor: #EFEFEF;
+$boldaccent: #FF3B3F;
+
+body {
+    background-color: $bgcolor;
+    color: $textcolor;
+}
+
+div.nav {
+  background-color: $bgcolor;
+  margin: -8px;
+  border-bottom: 1px solid $textcolor;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  font-size: 1.4em;
+
+  ul {
     list-style: none;
+    text-align: center;
+    padding: 0;
+  }
+
+  li {
+    font-family: 'Oswald', sans-serif;
+    line-height: 40px;
+    height: 40px;
+    width: 120px;
+    border-bottom: none;
+    height: 50px;
+    line-height: 50px;
+    display: inline-block;
+    margin-bottom: 0;
+    padding-top: 5px;
+    float: left;
+  }
+
+  li.nav-title {
+    color: $textcolor;
+    border-right: 1px solid $textcolor;
+    width: 140px;
+  }
+
+  a {
+    text-decoration: none;
+    color: $textcolor;
+    display: block;
+    transition: .3s background-color;
+  }
+
+  a:hover {
+    background-color: $boldaccent;
+    color: $bgcolor;
+  }
+
+  a.active {
+    background-color: $boldaccent;
+    color: $bgcolor;
+    cursor: default;
   }
 }
 
 button {
+  background: $bgcolor;
+
   &.save-order-changes,
   &.cancel-order-changes {
       cursor: pointer;
-      color: #444;
-      background: #e2edff;/*#c2d2ea;*/
+      color: $bgcolor;
+      background: $boldaccent;
   }
 
   &.save-order-changes:hover
@@ -18,10 +78,8 @@ button {
     background: #a1bdea;
   }
 
-  &.save-order-changes:disabled,
-  &.save-order-changes[disabled],
-  &.cancel-order-changes:disabled,
-  &.cancel-order-changes[disabled] {
+  &:disabled,
+  &[disabled] {
     cursor: default;
     pointer-events: none;
     color: #b0b0b0;
@@ -30,14 +88,24 @@ button {
 }
 
 table {
+  border-spacing: 0;
+
+  th {
+    border-color: $textcolor;
+  }
+
   &.new-row-table {
-      input {
-        width: 100px;
-      }
+    border-top: 1px solid $textcolor;
+
+    input {
+      width: 100px;
+    }
   }
 }
 
 td {
+  border-color: $textcolor;
+
   &:first-child {
     padding-left: 5px;
   }
@@ -45,10 +113,12 @@ td {
   &.cell-expand-button {
     cursor: pointer;
     font-weight: bold;
+    color: $boldaccent;
+    font-size: 1.2em;
   }
 
   .cell-editable {
-    background-color: rgb(228, 228, 228);
+    background-color: $minoraccent;
     padding: 5px;
   }
 
@@ -66,21 +136,27 @@ td {
 div {
   &#orders-header {
     position: fixed;
-    background: rgb(255, 255, 255);
-    width: 80%;
-    margin-top: -100px;
-    padding-top: 20px;
-    border-bottom: 2px solid black;
+    background-color: $bgcolor;
+    width: 100%;
+    top: 60px;
+    left: 0;
+    border-bottom: 2px solid $textcolor;
+    padding-bottom: 10px;
+    font-weight: bold;
   }
 
   &#orders-content {
-    margin-top: 90px;
+    margin-top: 140px;
+  }
+
+  &#market-content {
+    margin-top: 50px;
   }
 
   &.loading-indicator {
     position: absolute;
     z-index: 999;
-    background: white;
+    background: $bgcolor;
     width: 350px;
     height: 350px;
     top: 50%;

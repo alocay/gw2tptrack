@@ -56,10 +56,11 @@ var Items = React.createClass({
   render: function render() {
     return (
       <div>
-        Items
         <Loading enable={this.props.marketdata.get('loading')} />
-        <DataTable headers={this.getTableHeaders()}
-                   data={this.prepareMarketData()} />
+        <div id="market-content">
+          <DataTable headers={this.getTableHeaders()}
+                     data={this.prepareMarketData()} />
+        </div>
       </div>
     );
   }

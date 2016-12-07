@@ -61,7 +61,7 @@ module.exports = {
         new CleanWebpackPlugin([paths.build], {
           root: path.join(__dirname, '..'),
           varbose: true,
-          dry: false
+          dry: true
         })
     ],
     resolveLoader: {
