@@ -120,6 +120,10 @@ router.get('/item/:id/data', function(req, res) {
 router.get('/orders', function (req, res) {
   console.log('Getting orders...');
   query('SELECT * FROM orders', function(err, rows, result) {
+    if (err) {
+      console.log(err);
+      res.send(err);
+    }
     res.send(result.rows);
   });
 });

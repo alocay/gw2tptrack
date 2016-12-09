@@ -3,13 +3,13 @@ var Route = require('react-router').Route;
 var IndexRoute = require('react-router').IndexRoute;
 
 var App = require('./containers/App');
-var Items = require('./containers/Items');
+var Market = require('./containers/Market');
 var Orders = require('./containers/Orders');
 
 module.exports = (
   <Route component={App}>
     <Route path="/">
-      <IndexRoute component={Items} />
+      <IndexRoute component={Market} />
       <Route path="orders" component={Orders} />
     </Route>
   </Route>

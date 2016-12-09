@@ -2,20 +2,28 @@ $minoraccent: #CAEBF2;
 $textcolor: #545454; /*#A9A9A9;*/
 $bgcolor: #EFEFEF;
 $boldaccent: #FF3B3F;
+$gunmetal: #233237;
+$rustyred: #984B43;
+$warmyellow: #EAC67A;
+
+$glueprodark: #393939;
+$glueproaccent: #FF5A09;
+$glueprobright: #FF9900;
 
 body {
-    background-color: $bgcolor;
+    background-color: $glueprodark;
     color: $textcolor;
 }
 
 div.nav {
-  background-color: $bgcolor;
+  background-color: $glueproaccent;
   margin: -8px;
-  border-bottom: 1px solid $textcolor;
+  /*border-bottom: 1px solid $textcolor;*/
   position: fixed;
   top: 0;
   width: 100%;
   font-size: 1.4em;
+  padding-bottom: 13px;
 
   ul {
     list-style: none;
@@ -38,14 +46,14 @@ div.nav {
   }
 
   li.nav-title {
-    color: $textcolor;
-    border-right: 1px solid $textcolor;
+    color: $warmyellow;
+    /*border-right: 1px solid $textcolor;*/
     width: 140px;
   }
 
   a {
     text-decoration: none;
-    color: $textcolor;
+    color: $glueprobright;
     display: block;
     transition: .3s background-color;
   }
@@ -59,6 +67,70 @@ div.nav {
     background-color: $boldaccent;
     color: $bgcolor;
     cursor: default;
+  }
+}
+
+div {
+  &#fixed-header {
+    position: fixed;
+    background-color: $glueprodark;
+    width: 100%;
+    top: 60px;
+    left: 0;
+    padding-bottom: 10px;
+    font-weight: bold;
+
+    .container {
+      width: 80%;
+      max-width: 1160px;
+      padding: 25px;
+      background-color: $glueproaccent;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+
+    input {
+      background: $warmyellow;
+    }
+
+    ::-webkit-input-placeholder {
+      color: red;
+    }
+
+    :-moz-placeholder { /* Firefox 18- */
+     color: red;
+    }
+
+    ::-moz-placeholder {  /* Firefox 19+ */
+     color: red;
+    }
+
+    :-ms-input-placeholder {
+     color: red;
+    }
+  }
+
+  &#orders-content {
+    margin-top: 140px;
+  }
+
+  &#market-content {
+    margin-top: 50px;
+  }
+
+  &.loading-indicator {
+    position: absolute;
+    z-index: 999;
+    background: $bgcolor;
+    width: 350px;
+    height: 350px;
+    top: 50%;
+    left: 50%;
+    display: none;
+  }
+
+  &.loading-indicator.enabled {
+    display: block;
   }
 }
 
@@ -130,41 +202,5 @@ td {
   .expanded-cell-title {
     font-weight: bold;
     margin-right: 10px;
-  }
-}
-
-div {
-  &#orders-header {
-    position: fixed;
-    background-color: $bgcolor;
-    width: 100%;
-    top: 60px;
-    left: 0;
-    border-bottom: 2px solid $textcolor;
-    padding-bottom: 10px;
-    font-weight: bold;
-  }
-
-  &#orders-content {
-    margin-top: 140px;
-  }
-
-  &#market-content {
-    margin-top: 50px;
-  }
-
-  &.loading-indicator {
-    position: absolute;
-    z-index: 999;
-    background: $bgcolor;
-    width: 350px;
-    height: 350px;
-    top: 50%;
-    left: 50%;
-    display: none;
-  }
-
-  &.loading-indicator.enabled {
-    display: block;
   }
 }

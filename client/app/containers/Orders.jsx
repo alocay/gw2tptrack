@@ -7,10 +7,11 @@ var ImmutablePropTypes = require('react-immutable-proptypes');
 var classNames = require('classnames');
 var assign = require('object-assign');
 var TypesActions = require('../actions/TypesActions');
+var Constants = require('../constants/Constants');
 var DataTable = require('../components/DataTable');
 var NewOrder = require('../components/NewOrder');
 var Loading = require('../components/Loading');
-var Constants = require('../constants/Constants');
+var FixedHeader = require('../components/FixedHeader');
 
 var Orders = React.createClass({
   getInitialState: function getInitialState() {
@@ -95,16 +96,6 @@ var Orders = React.createClass({
       { title: 'Date Ordered', property: 'date_ordered', type: 'date' },
       { title: 'Date Filled', property: 'date_filled', type: 'date' },
       { title: 'Date Sold', property: 'date_sold', type: 'date' }
-    ]);
-  },
-
-  getNewOrderHeaders: function getNewOrderHeaders() {
-    return Immutable.fromJS([
-      { title: 'Name', property: 'name', type: 'string' },
-      { title: 'Buy Price', property: 'buy_price', type: 'number' },
-      { title: 'Amount Ordered', property: 'amount_ordered', type: 'number' },
-      { title: 'Predicted Sell Unit Price', property: 'predicted_sell_unit_price', type: 'number' },
-      { title: 'Date Ordered (YYYY-MM-DD)', property: 'date_ordered', type: 'date' }
     ]);
   },
 
@@ -194,23 +185,27 @@ var Orders = React.createClass({
     return orders.reduce((a, b) => b.get('actual_profit') ? a + b.get('actual_profit') : a, 0);
   },
 
+  createOrderHeaderButtons: function createOrderHeaderButtons() {
+    return [
+      <button className="two columns offset-by-two" onClick={this.addOrder} disabled={this.state.addingOrder}>Add Order</button>,
+      <button className="two columns save-order-changes" onClick={this.saveChanges} disabled={this.state.modifiedOrders.size === 0}>Save</button>,
+      <button className="two columns cancel-order-changes" onClick={this.cancelChanges} disabled={this.state.modifiedOrders.size === 0}>Cancel</button>,
+    ];
+  },
+
   render: function render() {
     var filteredOrders = this.filterOrders(this.state.detailedOrders);
+    var totalProfitElement = <div>Total Profit: {this.calculateTotalProfit(filteredOrders)}</div>;
+    var newOrderElement = <NewOrder onSave={this.saveNewOrder} onCancel={this.cancelNewOrder}/>;
+
     return (
       <div>
         <Loading enable={this.props.orders.get('loading') || this.props.orders.get('updating')} />
-        <div id="orders-header">
-          <div className="container">
-            <div className="row">
-              <input className="four columns" type="text" placeholder="Search" onKeyUp={this.onSearchChanged}></input>
-              <button className="two columns offset-by-two" onClick={this.addOrder} disabled={this.state.addingOrder}>Add Order</button>
-              <button className="two columns save-order-changes" onClick={this.saveChanges} disabled={this.state.modifiedOrders.size === 0}>Save</button>
-              <button className="two columns cancel-order-changes" onClick={this.cancelChanges} disabled={this.state.modifiedOrders.size === 0}>Cancel</button>
-            </div>
-            <div>Total Profit: {this.calculateTotalProfit(filteredOrders)}</div>
-            {this.state.addingOrder ? <NewOrder headers={this.getNewOrderHeaders()} onSave={this.saveNewOrder} onCancel={this.cancelNewOrder}/> : null}
-          </div>
-        </div>
+        <FixedHeader search={this.onSearchChanged}
+                     buttons={this.createOrderHeaderButtons()}
+                     subElements={totalProfitElement}
+                     extend={this.state.addingOrder}
+                     extendElement={newOrderElement}/>
         <div id="orders-content">
           <DataTable headers={this.getTableHeaders()}
                      data={filteredOrders}
@@ -222,6 +217,19 @@ var Orders = React.createClass({
     );
   }
 });
+
+/*<div id="orders-header">
+  <div className="container">
+    <div className="row">
+      <input className="four columns" type="text" placeholder="Search" onKeyUp={this.onSearchChanged}></input>
+      <button className="two columns offset-by-two" onClick={this.addOrder} disabled={this.state.addingOrder}>Add Order</button>
+      <button className="two columns save-order-changes" onClick={this.saveChanges} disabled={this.state.modifiedOrders.size === 0}>Save</button>
+      <button className="two columns cancel-order-changes" onClick={this.cancelChanges} disabled={this.state.modifiedOrders.size === 0}>Cancel</button>
+    </div>
+    <div>Total Profit: {this.calculateTotalProfit(filteredOrders)}</div>
+    {this.state.addingOrder ? <NewOrder headers={this.getNewOrderHeaders()} onSave={this.saveNewOrder} onCancel={this.cancelNewOrder}/> : null}
+  </div>
+</div>*/
 
 const mapStateToProps = (state) => {
   return {

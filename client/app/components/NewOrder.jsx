@@ -4,9 +4,16 @@ var ImmutablePropTypes = require('react-immutable-proptypes');
 var classNames = require('classnames');
 const uuid = require('uuid/v1');
 
+const newOrderHeaders = Immutable.fromJS([
+  { title: 'Name', property: 'name', type: 'string' },
+  { title: 'Buy Price', property: 'buy_price', type: 'number' },
+  { title: 'Amount Ordered', property: 'amount_ordered', type: 'number' },
+  { title: 'Predicted Sell Unit Price', property: 'predicted_sell_unit_price', type: 'number' },
+  { title: 'Date Ordered (YYYY-MM-DD)', property: 'date_ordered', type: 'date' }
+]);
+
 var NewOrder = React.createClass({
   propTypes: {
-    headers: ImmutablePropTypes.list.isRequired,
     onSave: React.PropTypes.func.isRequired,
     onCancel: React.PropTypes.func.isRequired
   },
@@ -88,7 +95,7 @@ var NewOrder = React.createClass({
       <table className="new-row-table">
         <thead>
           <tr>
-            {this.props.headers.map(h =>
+            {newOrderHeaders.map(h =>
               <th key={h.get('property')}>{h.get('title')}</th>
             )}
             <th></th>
@@ -97,7 +104,7 @@ var NewOrder = React.createClass({
         </thead>
         <tbody>
           <tr>
-            {this.props.headers.map(h => this.getCell(h))}
+            {newOrderHeaders.map(h => this.getCell(h))}
             <td><button onClick={this.saveRow}>Save</button></td>
             <td><button onClick={this.cancelRow}>Cancel</button></td>
           </tr>

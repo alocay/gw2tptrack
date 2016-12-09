@@ -8,8 +8,16 @@ var assign = require('object-assign');
 var TypesActions = require('../actions/TypesActions');
 var DataTable = require('../components/DataTable');
 var Loading = require('../components/Loading');
+var FixedHeader = require('../components/FixedHeader');
+var NewOrder = require('../components/NewOrder');
 
 var Items = React.createClass({
+  getInitialState: function getInitialState() {
+      return {
+        addingOrder: false
+      };
+  },
+
   componentDidMount: function componentDidMount() {
     if (!this.props.marketdata.get('data') &&
         !this.props.marketdata.get('loading') &&
@@ -53,10 +61,40 @@ var Items = React.createClass({
     return this.props.marketdata.get('data').filter(d => d.get('min_sale_unit_price') > 0 && d.get('max_offer_unit_price') > 0);
   },
 
+  addOrder: function addOrder() {
+    this.setState({addingOrder: true});
+  },
+
+  saveNewOrder: function saveNewOrder(order) {
+    if (this.props.actions.postNewOrder) {
+      this.props.actions.postNewOrder(order);
+    }
+  },
+
+  cancelNewOrder: function cancelNewOrder() {
+    this.setState({addingOrder: false});
+  },
+
+  onSearchChanged: function onSearchChanged(e) {
+    this.setState({filter: e.target.value });
+  },
+
+  createOrderHeaderButtons: function createOrderHeaderButtons() {
+    return [
+      <button className="two columns offset-by-two" onClick={this.addOrder} disabled={this.state.addingOrder}>Add Order</button>
+    ];
+  },
+
   render: function render() {
+    var newOrderElement = <NewOrder onSave={this.saveNewOrder} onCancel={this.cancelNewOrder}/>;
+
     return (
       <div>
         <Loading enable={this.props.marketdata.get('loading')} />
+        <FixedHeader search={this.onSearchChanged}
+                     buttons={this.createOrderHeaderButtons()}
+                     extend={this.state.addingOrder}
+                     extendElement={newOrderElement}/>
         <div id="market-content">
           <DataTable headers={this.getTableHeaders()}
                      data={this.prepareMarketData()} />
